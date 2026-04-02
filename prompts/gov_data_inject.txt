@@ -1,0 +1,88 @@
+══════════════════════════════════════════════════════════════════════════════
+PRE-FETCHED GOVERNMENT DATA (Track A — verified, do NOT re-search these)
+══════════════════════════════════════════════════════════════════════════════
+
+{{gov_data_section}}
+
+══════════════════════════════════════════════════════════════════════════════
+YOUR SEARCH MISSION (Track B — use your search tools for these)
+══════════════════════════════════════════════════════════════════════════════
+
+The hard data above is already confirmed. Do NOT waste search rounds
+re-checking FEMA or Assessor data. Instead, focus ALL your search
+effort on background intelligence that APIs cannot provide:
+
+PHASE 1 DEEP DIG — BORROWER PORTFOLIO RISK (HML-CRITICAL):
+  This is the most important deep dig. HML's risk is 50% property, 50% borrower.
+  Standard underwriting misses cross-lender exposure. Your job is to find it.
+
+  STEP A — Confirm identity and role:
+  - Search "{{owner_for_search}}" Arizona realtor / investor / flipper
+  - Check LinkedIn, Instagram, YouTube for self-described real estate activity
+  - Is this person a professional investor or a homeowner? This changes everything.
+
+  STEP B — Map their current portfolio (find ALL properties they hold):
+  - Search "{{owner_for_search}}" on Zillow agent profile / Redfin as buyer/seller
+  - Search Arizona Corporation Commission (azcc.gov) for any LLC registered
+    to this person — LLCs often hold real estate
+  - If LLC found: search that LLC name on Zillow/Redfin/Realtor for listings
+  - If active on Instagram/YouTube/TikTok/BiggerPockets: scrape post content
+    for mentions of current projects, addresses, or "just closed / just listed"
+    — professional flippers frequently publicize their active deals
+
+  STEP C — Estimate cross-lender HML exposure:
+  - If they are an active investor/flipper: how many properties are they
+    currently holding? (from Step B)
+  - Search "{{owner_for_search}}" hard money or deed of trust Arizona
+    for any public mentions of their financing sources
+  - ⚠️ NOTE: Maricopa Recorder (recorder.maricopa.gov) is protected by
+    Cloudflare Managed Challenge — completely inaccessible via curl, jina_read,
+    or any automated HTTP method. Do NOT attempt to scrape it. Do NOT write
+    "Recorder search returned X" — it never will. Explicitly state:
+    "Maricopa Recorder inaccessible (Cloudflare); cross-lender debt unknown."
+    Estimate total HML exposure from social media + MLS signals only.
+
+  STEP D — Litigation and financial stress signals:
+  - Search AZCourts.gov Superior Court public access for "{{owner_for_search}}"
+    URL: https://www.superiorcourt.maricopa.gov/publicaccess/
+  - Search "{{owner_for_search}}" Arizona bankruptcy (PACER records sometimes
+    surface in news or legal databases)
+  - Search "{{owner_for_search}}" judgment lien Arizona
+  - Search "{{owner_for_search}}" foreclosure Arizona
+
+  OUTPUT REQUIRED — Include in your phase1_ownership section:
+  "borrower_risk_profile": {
+    "is_professional_investor": true | false,    // NOT null
+    "evidence": "No social/professional profile found" if not found,
+    "estimated_properties_held": 0,              // NOT null
+    "properties_found": [],
+    "llc_found": false,
+    "llc_names": [],
+    "litigation_signals": [],
+    "cross_lender_exposure": "UNKNOWN | KNOWN($X) | ESTIMATED($X)",
+    "cross_lender_note": "Maricopa Recorder inaccessible (Cloudflare); ...",
+    "borrower_risk_level": "LOW | MEDIUM | HIGH", // NOT null
+    "borrower_risk_summary": "one sentence summary"
+  }
+
+PHASE 2 DEEP DIG:
+  - Property-specific news: Search the exact address for news reports,
+    incidents, code enforcement actions, contractor complaints or BBB filings
+  - Listing claims "Brand new oven" + "Pool acid washed 4/2023"
+  - Cross-check: 22-year-old house, NO renovation permits found.
+    What major systems are likely at end-of-life?
+    (roof 25yr, HVAC 20yr, water heater 12yr, pool equipment 10-15yr)
+
+PHASE 3 DEEP DIG:
+  - Neighborhood deep dive: Recent crime incidents within 0.5 mile
+    (specific incidents from SpotCrime/CrimeMapping — NOT aggregate scores)
+  - Environmental: EPA ECHO violations near address, brownfields,
+    underground storage tanks within 0.5 mile
+
+PHASE 4 DEEP DIG:
+  - Market intelligence: Recent comparable sales within 0.5 mile,
+    distressed sales or foreclosure clusters, active rental listings
+
+These are the "黑料" — the unexpected findings that make this report
+worth paying for. Aggregate scores from Niche/CrimeGrade are table
+stakes. Go deeper.

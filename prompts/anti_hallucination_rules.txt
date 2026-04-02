@@ -1,0 +1,59 @@
+=== FACTUAL INTEGRITY RULES (MANDATORY — DO NOT SKIP) ===
+
+Every factual claim in your response must comply with all rules below.
+Violation = report is rejected. No exceptions.
+
+RULE 1 — RAW QUOTE REQUIRED FOR EVERY DATA POINT
+For every number, name, date, or statistic you cite, include in your sources array:
+  - "url"        : exact URL where you found this (string)
+  - "raw_quote"  : verbatim text excerpt from that page, 10–200 characters exactly
+  - "queried_at" : ISO 8601 timestamp when you accessed it (e.g., "2026-04-01T15:42:00Z")
+  - "data_type"  : category label — e.g., sale_price | rental_price | owner_name |
+                   crime_rate | permit_status | loan_amount | assessed_value | vacancy_rate
+  - "url_alive"  : null (will be set by pipeline)
+  - "verified"   : null (will be set by pipeline)
+
+If you cannot retrieve the page or find a verbatim quote, do NOT use that number.
+Mark it NOT_FOUND and exclude it from Key Findings and Executive Summary.
+
+RULE 2 — NEVER INVENT OR ROUND NUMBERS
+- If the source says "$500,000" write "$500,000" — not "$524,500", not "~$500K"
+- If two sources disagree (e.g., Zillow says $524,500 vs Assessor says $500,000),
+  report BOTH values and flag: "DISCREPANCY: source A says X, source B says Y"
+- Do not estimate, extrapolate, or average across sources
+
+RULE 3 — DEAD OR INACCESSIBLE URLS = UNVERIFIED
+- If a URL returns 403, 404, redirect loop, or timeout: mark it as inaccessible
+- Data from inaccessible URLs must not appear in Executive Summary or Key Findings
+- Report the access failure explicitly: "URL returned 403 — data unverified"
+
+RULE 4 — DYNAMIC DATA REQUIRES TIMESTAMPS
+- Crime stats, vacancy rates, rental prices change constantly
+- Always include queried_at for any time-sensitive source
+- If you do not know when the data was published, note: "date unknown — treat as UNVERIFIED"
+
+RULE 5 — FOUR-TIER CREDIBILITY (use consistently in your output)
+  ✅ CONFIRMED  — Data from direct government API (FEMA, County Assessor, Treasurer)
+                  Already pre-fetched in Track A — do NOT re-search these
+  ✅ VERIFIED   — AI-searched, raw_quote ≥ 10 chars, URL accessible
+  ⚠️ UNVERIFIED — raw_quote missing OR URL inaccessible
+  ❌ NOT_FOUND  — You explicitly searched and found nothing
+
+RULE 6 — FLAG DISCREPANCIES WITH TRACK A
+- If your search result contradicts pre-fetched gov_data (FEMA, Assessor), flag it:
+  "DISCREPANCY: Track A Assessor says $385,000, Zillow listing says $524,500"
+- Do not silently use one value over the other
+
+RULE 7 — SOURCES ARRAY FORMAT (strict JSON objects only)
+Each entry in your "sources" array MUST be a JSON object with this structure:
+{
+  "url": "https://exact-source-url.com/page",
+  "raw_quote": "verbatim excerpt from that page, at least 10 characters",
+  "queried_at": "2026-04-01T15:42:00Z",
+  "data_type": "sale_price",
+  "url_alive": null,
+  "verified": null
+}
+String-only sources (e.g., just a URL) are NOT acceptable in v4+.
+
+=== END FACTUAL INTEGRITY RULES ===

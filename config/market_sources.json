@@ -1,0 +1,87 @@
+{
+  "phoenix_maricopa": {
+    "market_name": "Phoenix Metro — Maricopa County, AZ",
+    "state": "AZ",
+    "county": "Maricopa",
+    "gov_fetchers": {
+      "assessor": {
+        "function": "fetch_maricopa_parcel",
+        "api_type": "arcgis_rest",
+        "url": "https://gis.maricopa.gov/arcgis/rest/services/Assessor/AssessorParcels/MapServer/0/query",
+        "input": "lat_lon",
+        "status": "VERIFIED"
+      },
+      "treasurer": {
+        "function": "fetch_maricopa_tax",
+        "api_type": "web_scrape",
+        "url": "https://treasurer.maricopa.gov/parcel/",
+        "input": "parcel_number",
+        "status": "NEEDS_TESTING"
+      },
+      "recorder": {
+        "function": null,
+        "api_type": "cloudflare_protected",
+        "url": "https://recorder.maricopa.gov/recdocdata/",
+        "input": "owner_name",
+        "status": "NOT_CONFIGURED",
+        "notes": "Cloudflare protection. Use jina_read fallback in AI search."
+      },
+      "permits": {
+        "function": null,
+        "status": "NOT_AVAILABLE",
+        "notes": "Queen Creek has no public online permit database. Other Maricopa cities (Mesa/Tempe/Scottsdale) have online systems."
+      }
+    },
+    "sources": {
+      "assessor": {
+        "url": "https://mcassessor.maricopa.gov",
+        "search_method": "地址搜索：首页搜索栏输入街道地址（不含城市/州）",
+        "data_available": ["owner_name", "entity_type", "assessed_value", "tax_status", "parcel_number", "legal_description"],
+        "access": "FREE — 无需登录，公开查询",
+        "jina_fallback": "https://r.jina.ai/https://mcassessor.maricopa.gov",
+        "notes": "搜索时用街道地址即可（如 '21145 E Saddle Way'），不用写城市"
+      },
+      "recorder": {
+        "url": "https://recorder.maricopa.gov/recdocdata/",
+        "search_method": "按 Recorded Name（业主/公司名）或 Document Number 搜索",
+        "data_available": ["deed_of_trust", "liens", "lis_pendens", "assignments", "releases", "recording_date", "loan_amount"],
+        "access": "FREE — 无需登录，公开查询",
+        "jina_fallback": "https://r.jina.ai/https://recorder.maricopa.gov/recdocdata/",
+        "notes": "不支持地址搜索，需先从 Assessor 获取业主名，再用业主名搜 Recorder"
+      },
+      "fema_flood": {
+        "url": "https://msc.fema.gov/portal/search",
+        "search_method": "输入完整地址，返回 FEMA Flood Zone 分区",
+        "data_available": ["flood_zone", "panel_number", "effective_date", "community_name"],
+        "access": "FREE — 全国统一，任何地址可查",
+        "jina_fallback": "https://r.jina.ai/https://msc.fema.gov/portal/search",
+        "notes": "Zone X = 低风险（不需强制洪水险），Zone AE/AH = 高风险（强制洪水险）"
+      },
+      "tax_lien": {
+        "url": "https://treasurer.maricopa.gov/parcel/",
+        "search_method": "输入 Parcel Number（从 Assessor 获取）",
+        "data_available": ["tax_due", "tax_paid", "delinquency_status", "tax_lien_sale_history"],
+        "access": "FREE — 无需登录",
+        "notes": "需先从 Assessor 拿到 Parcel Number"
+      },
+      "sex_offender": {
+        "url": "https://www.azdps.gov/services/public/sex-offender",
+        "search_method": "输入地址，搜索半径选 1 mile",
+        "data_available": ["registered_offenders_count", "offender_level", "distance_from_property"],
+        "access": "FREE — AZ DPS 公开数据库"
+      }
+    },
+    "data_chain": [
+      "Step 1: Assessor（地址 → 业主名 + Parcel Number）",
+      "Step 2: Recorder（业主名 → Deed/Lien/Lis Pendens）",
+      "Step 3: Treasurer（Parcel Number → 税务状态）",
+      "Step 4: FEMA（地址 → Flood Zone）",
+      "Step 5: AZ DPS（地址 → Sex Offender）"
+    ],
+    "city_to_county": [
+      "phoenix", "mesa", "tempe", "scottsdale", "chandler", "gilbert",
+      "queen creek", "glendale", "peoria", "surprise", "goodyear", "buckeye",
+      "apache junction", "avondale", "maricopa"
+    ]
+  }
+}
